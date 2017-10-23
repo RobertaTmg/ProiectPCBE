@@ -8,14 +8,15 @@ public class AsexualCell extends Cell {
 	public AsexualCell(int x, int y) {
 		super(x, y);
 		semaphore = new Semaphore(1,true);
+		System.out.println("Asexuate Cell " + this.number + " is created");
 	}
 
 	@Override
 	public void reproduce() throws InterruptedException {
+		System.out.println("Asexuate Cell " + this.number + " is reproducing");
 		Object find;
 		int i, j;
 		int children = 0;
-		// semaphore start
 		for (i = -2; i <= 2; i++)
 			for (j = -2; j <= 2; j++) {
 				semaphore.acquire();
@@ -23,19 +24,19 @@ public class AsexualCell extends Cell {
 				if (find == null) {
 					if (children < 2) {
 						children++;
-						map.set(xLocation + i, yLocation + j, new AsexualCell(xLocation + i, yLocation + j));
+						AsexualCell child =  new AsexualCell(xLocation + i, yLocation + j);
+						map.set(xLocation + i, yLocation + j, child);
+						child.start();
 					}
-					if (children == 2) {
+					else if (children == 2) {
 						break;
 					}
 				}
 				semaphore.release();
 			}
 		
-		// semaphore stop
-		if (children < 2) {
-			throw new IllegalStateException("Not enough space for childrens");
-
+		if (children == 0) {
+			throw new IllegalStateException("Not enough space for both childrens");
 		}
 		this.kill();
 	}

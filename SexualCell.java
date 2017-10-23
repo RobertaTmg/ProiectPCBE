@@ -7,10 +7,12 @@ public class SexualCell extends Cell {
 
 	public SexualCell(int x, int y) {
 		super(x, y);
+		System.out.println("Sexuate Cell " + this.number + " is created");
 	}
 
 	public void setIsBusy(boolean value) {
 		isBusy = value;
+		System.out.println("Sexuate Cell " + this.number + " is set busy");
 	}
 	
 	public boolean getBusy() {
@@ -25,6 +27,7 @@ public class SexualCell extends Cell {
 	
 	@Override
 	public void reproduce() throws InterruptedException {
+		System.out.println("Sexuate Cell " + this.number + " is reproducing");
 		Object find;
 		int i, j;
 		for(i=-2; i<=2; i++) {

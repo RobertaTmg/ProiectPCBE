@@ -7,8 +7,8 @@ public abstract class Cell implements Runnable {
 	protected int xLocation;
 	protected int yLocation;
 
-	public static int cellNumbers;
-	private int number;
+	public static int cellNumbers = 1;
+	protected int number;
 	private boolean alive = true;
 	protected Map map = Map.getInstance();
 	private FoodResource food = null;
@@ -31,8 +31,7 @@ public abstract class Cell implements Runnable {
 	}
 
 	public void eat() {
-		//System.out.println("Eating");
-
+		System.out.println("Cell " + this.number + " is eating");
 		T_full = 5;
 		eatCount++;
 	}
@@ -62,8 +61,7 @@ public abstract class Cell implements Runnable {
 	}
 
 	public void searchFood() {
-		//System.out.println("Searching for food");
-
+		System.out.println("Cell " + this.number + " is searching for food");
 		Object find;
 		int i, j;
 		for (i = -2; i <= 2; i++) {
@@ -72,8 +70,6 @@ public abstract class Cell implements Runnable {
 				if (find instanceof FoodResource) {
 					synchronized (find) {
 						this.eat();
-						//System.out.println("at " + (xLocation + i) + " " + (yLocation + j));
-
 						food = (FoodResource) find;
 						((FoodResource) find).eat();
 						if (food.availableFood() == 0) {
@@ -90,8 +86,6 @@ public abstract class Cell implements Runnable {
 
 	public void run() {
 		while (alive) {
-			System.out.println("Cell running");
-
 			synchronized (this) {
 				if (eatCount >= 10)
 					try {
@@ -121,8 +115,8 @@ public abstract class Cell implements Runnable {
 	}
 
 	protected synchronized void kill() {
+		System.out.println("Sexuate Cell " + this.number + " died");
 		alive = false;
-		System.out.println("Cell died");
 		Thread.currentThread().interrupt();
 		map.set(xLocation, yLocation, null);
 		return;
