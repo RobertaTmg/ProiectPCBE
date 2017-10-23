@@ -9,6 +9,7 @@ public class Map {
 	}
 	
 	public void set(int x, int y, Object other) {
+//		System.out.println("" + x + " " + y);
 		matrix[x][y] = other;
 	}
 	
@@ -18,17 +19,10 @@ public class Map {
 		return "error";
 	}
 	
-	public synchronized void makeLoveNotWar(SexualCell male, SexualCell female) {
-		if(male.getRelationshipStatus() == false && female.getRelationshipStatus() == false) {
-			male.setRelationshipStatus(true);
-			female.setRelationshipStatus(true);
+	public synchronized void setIsBusy(SexualCell male, SexualCell female) {
+		if(male.getBusy() == false && female.getBusy() == false) {
+			male.setIsBusy(true);
+			female.setIsBusy(true);
 		}
 	}
-	
-	public synchronized void makeChild(SexualCell partner) {
-		int[] location = partner.getLocation();
-		partner = null;
-		matrix[location[0]][location[1]] = new SexualCell(location[0], location[1]);
-	}
-
 }

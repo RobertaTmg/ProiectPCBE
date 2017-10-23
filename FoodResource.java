@@ -11,4 +11,7 @@ public class FoodResource {
 		if(total > 0)
 			total --;
 	}
+	public int availableFood() {
+		return total;
+	}
 }
