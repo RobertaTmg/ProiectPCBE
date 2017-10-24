@@ -6,7 +6,6 @@ public abstract class Cell implements Runnable {
 	protected int eatCount;
 	protected int xLocation;
 	protected int yLocation;
-
 	public static int cellNumbers = 1;
 	protected int number;
 	private boolean alive = true;
@@ -37,9 +36,9 @@ public abstract class Cell implements Runnable {
 	}
 
 	public void move(int x, int y) {
-		String ret = String.format("Cell is moving from %d,%d to %d,%d", xLocation, yLocation, x ,y);
+		String ret = String.format("Cell %d is moving from %d,%d to %d,%d",number, xLocation, yLocation, x ,y);
 		System.out.println(ret);
-
+		//monitor pe map
 		synchronized (map) {
 			map.set(x, y, this);
 			map.set(xLocation, yLocation, null);
@@ -68,10 +67,11 @@ public abstract class Cell implements Runnable {
 			for (j = -2; j <= 2; j++) {
 				find = map.get(xLocation + i, yLocation + j);
 				if (find instanceof FoodResource) {
-					synchronized (find) {
+					//monitor pe mancare
+					synchronized (find) {//synchronized doar cand ia mancarea
 						this.eat();
 						food = (FoodResource) find;
-						((FoodResource) find).eat();
+						food.eat();
 						if (food.availableFood() == 0) {
 							map.set(xLocation + i, yLocation + j, null);
 						}
@@ -86,11 +86,11 @@ public abstract class Cell implements Runnable {
 
 	public void run() {
 		while (alive) {
-			synchronized (this) {
 				if (eatCount >= 10)
 					try {
 						this.reproduce();
 					} catch (InterruptedException e) {
+						System.out.println("--- Cell " + this.number + " error on reproducing ---");
 						e.printStackTrace();
 					}
 				if (T_full == 0)
@@ -105,7 +105,6 @@ public abstract class Cell implements Runnable {
 					this.kill();
 					return;
 				}
-			}
 		}
 	}
 
@@ -114,9 +113,9 @@ public abstract class Cell implements Runnable {
 		thread.run();
 	}
 
-	protected synchronized void kill() {
-		System.out.println("Sexuate Cell " + this.number + " died");
-		alive = false;
+	protected void kill() {
+		System.out.println("Cell " + this.number + " died");
+		this.alive = false;
 		Thread.currentThread().interrupt();
 		map.set(xLocation, yLocation, null);
 		return;
