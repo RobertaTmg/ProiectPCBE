@@ -18,21 +18,22 @@ public class AsexualCell extends Cell {
 		AsexualCell child;
 		for (i = -2; i <= 2; i++)
 			for (j = -2; j <= 2; j++) {
-				//monitor pe map
-				synchronized (map) {//nu pe map, pe celula
 				find = map.get(xLocation + i, yLocation + j);
-				if (find == null) {
-					if (children < 2) {
-						children++;
-						child =  new AsexualCell(xLocation + i, yLocation + j);
-						map.set(xLocation + i, yLocation + j, child);
-						child.start();
+				if (find instanceof Free) {
+					synchronized (find) {
+						//if (children < 2) 
+						{
+							children++;
+							child =  new AsexualCell(xLocation + i, yLocation + j);
+							map.set(xLocation + i, yLocation + j, child);
+							//child.start();
+						}
 					}
+					child.start();
 				}
 				if (children == 2) {
 					break;
 				}
-			}
 		}
 		if (children == 0) {
 			throw new IllegalStateException("Not enough space for both childrens");

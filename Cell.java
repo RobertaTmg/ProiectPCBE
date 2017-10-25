@@ -38,14 +38,20 @@ public abstract class Cell implements Runnable {
 	public void move(int x, int y) {
 		String ret = String.format("Cell %d is moving from %d,%d to %d,%d",number, xLocation, yLocation, x ,y);
 		System.out.println(ret);
-		//monitor pe map
-		synchronized (map) {
-			map.set(x, y, this);
-			map.set(xLocation, yLocation, null);
+		Object nextPosition = map.get(x, y);
+		Object currentPosition = map.get(xLocation, yLocation);
+		//monitor pe pozitia curenta si pozitia dorita
+		if(nextPosition instanceof Free) {
+			synchronized (currentPosition) {
+				synchronized (nextPosition) {
+					map.set(x, y, this);
+					map.set(xLocation, yLocation, new Free());
+				}
+			}
+			xLocation = x;
+			yLocation = y;
+			food = null;
 		}
-		xLocation = x;
-		yLocation = y;
-		food = null;
 	}
 
 	public void moveRandom() {
@@ -67,15 +73,14 @@ public abstract class Cell implements Runnable {
 			for (j = -2; j <= 2; j++) {
 				find = map.get(xLocation + i, yLocation + j);
 				if (find instanceof FoodResource) {
-					//monitor pe mancare
-					synchronized (find) {//synchronized doar cand ia mancarea
-						this.eat();
-						food = (FoodResource) find;
+					food = (FoodResource) find;
+					synchronized (food) {//synchronized doar cand ia mancarea
 						food.eat();
 						if (food.availableFood() == 0) {
-							map.set(xLocation + i, yLocation + j, null);
+							map.set(xLocation + i, yLocation + j, new Free());
 						}
 					}
+					this.eat();
 					return;
 				}
 			}
@@ -117,7 +122,7 @@ public abstract class Cell implements Runnable {
 		System.out.println("Cell " + this.number + " died");
 		this.alive = false;
 		Thread.currentThread().interrupt();
-		map.set(xLocation, yLocation, null);
+		map.set(xLocation, yLocation, new Free());
 		return;
 	}
 

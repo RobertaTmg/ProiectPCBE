@@ -4,8 +4,13 @@ public class Main {
 
 	public static void main(String[] args) {
 		Map map = Map.getInstance();
-		for(int i=0;i<=10;i++) {
-			for(int j=0;j<=10;j++) {
+		for(int i=0;i<100;i++) {
+			for(int j=0;j<100;j++) {
+				map.set(i, j, new Free());
+			}
+		}
+		for(int i=0;i<10;i++) {
+			for(int j=0;j<10;j++) {
 				map.set(i, j, new FoodResource(1));
 			}
 		}
